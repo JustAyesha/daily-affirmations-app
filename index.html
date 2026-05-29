@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daily Check-In</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #e0f7fa, #f3e5f5);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .card {
+      background: white;
+      border-radius: 20px;
+      padding: 40px;
+      max-width: 500px;
+      width: 100%;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    h1 { color: #6a1b9a; margin-bottom: 5px; font-size: 28px; }
+    .subtitle { color: #aaa; margin-bottom: 30px; font-size: 14px; }
+    h2 { color: #444; margin-bottom: 15px; font-size: 18px; }
+    .moods {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+    }
+    .mood-btn {
+      font-size: 36px;
+      background: #f9f9f9;
+      border: 3px solid transparent;
+      border-radius: 15px;
+      padding: 10px 15px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .mood-btn:hover { transform: scale(1.2); }
+    .mood-btn.selected {
+      border-color: #6a1b9a;
+      background: #f3e5f5;
+      transform: scale(1.2);
+    }
+    textarea {
+      width: 100%;
+      padding: 15px;
+      font-size: 15px;
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      resize: none;
+      height: 100px;
+      margin-bottom: 20px;
+      font-family: Arial, sans-serif;
+    }
+    textarea:focus { outline: none; border-color: #6a1b9a; }
+    .submit-btn {
+      background: #6a1b9a;
+      color: white;
+      border: none;
+      padding: 15px 40px;
+      font-size: 16px;
+      border-radius: 30px;
+      cursor: pointer;
+      width: 100%;
+      transition: background 0.2s;
+    }
+    .submit-btn:hover { background: #4a148c; }
+    .result {
+      display: none;
+      margin-top: 25px;
+      padding: 20px;
+      border-radius: 15px;
+      background: #f3e5f5;
+    }
+    .result h3 { color: #6a1b9a; margin-bottom: 10px; font-size: 20px; }
+    .result p { color: #555; margin-bottom: 8px; line-height: 1.6; }
+    .tip {
+      background: #e8f5e9;
+      border-radius: 10px;
+      padding: 15px;
+      margin-top: 15px;
+      color: #2e7d32;
+      font-size: 14px;
+    }
+    .reset-btn {
+      margin-top: 15px;
+      background: none;
+      border: 2px solid #6a1b9a;
+      color: #6a1b9a;
+      padding: 10px 25px;
+      border-radius: 30px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .reset-btn:hover { background: #f3e5f5; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>🌱 Daily Check-In</h1>
+    <p class="subtitle">A moment just for you</p>
+
+    <div id="form-section">
+      <h2>How are you feeling today?</h2>
+      <div class="moods">
+        <button class="mood-btn" onclick="selectMood(this, 1)" title="Really struggling">😔</button>
+        <button class="mood-btn" onclick="selectMood(this, 2)" title="Not great">😟</button>
+        <button class="mood-btn" onclick="selectMood(this, 3)" title="Okay">😐</button>
+        <button class="mood-btn" onclick="selectMood(this, 4)" title="Pretty good">🙂</button>
+        <button class="mood-btn" onclick="selectMood(this, 5)" title="Amazing">🌟</button>
+      </div>
+
+      <textarea id="note" placeholder="Want to share anything about your day? (optional)"></textarea>
+
+      <button class="submit-btn" onclick="submitCheckin()">Check In 💚</button>
+    </div>
+
+    <div class="result" id="result">
+      <h3 id="result-title"></h3>
+      <p id="result-message"></p>
+      <div class="tip" id="result-tip"></div>
+      <button class="reset-btn" onclick="reset()">Check in again</button>
+    </div>
+  </div>
+
+  <script>
+    let selectedMood = 0;
+
+    function selectMood(btn, mood) {
+      document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      selectedMood = mood;
+    }
+
+    const responses = {
+      1: {
+        title: "It's okay to not be okay 💜",
+        message: "Thank you for checking in even on a hard day. That took courage. You don't have to have it all together right now — just take it one breath at a time.",
+        tip: "💡 Tip: Try the 4-7-8 breathing technique. Breathe in for 4 seconds, hold for 7, breathe out slowly for 8. Repeat 3 times."
+      },
+      2: {
+        title: "You showed up today 💙",
+        message: "Things feel tough right now, and that's valid. Be gentle with yourself today. Small steps still count — even just getting through the day matters.",
+        tip: "💡 Tip: Step outside for 5 minutes if you can. Fresh air and a change of scenery can gently shift your mood."
+      },
+      3: {
+        title: "A neutral day is still a day 💛",
+        message: "Not every day has to be amazing. You're here, you checked in, and that's something. Sometimes steady is exactly what we need.",
+        tip: "💡 Tip: Drink a glass of water, stretch for 2 minutes, and notice 3 things around you. Grounding yourself can help."
+      },
+      4: {
+        title: "That's lovely to hear 💚",
+        message: "You're doing well today! Hold onto this feeling and notice what's contributing to it. You deserve good days like this.",
+        tip: "💡 Tip: Share some kindness today — a message to a friend, a smile, or doing something nice for yourself counts too!"
+      },
+      5: {
+        title: "You're shining today 🌟",
+        message: "Amazing! Something is clearly going right — celebrate that! Your positive energy is a gift to yourself and everyone around you.",
+        tip: "💡 Tip: Write down 3 things you're grateful for right now. Capturing good moments helps your brain hold onto them longer."
+      }
+    };
+
+    function submitCheckin() {
+      if (selectedMood === 0) {
+        alert("Please select how you're feeling first 😊");
+        return;
+      }
+      const r = responses[selectedMood];
+      document.getElementById('result-title').textContent = r.title;
+      document.getElementById('result-message').textContent = r.message;
+      document.getElementById('result-tip').textContent = r.tip;
+      document.getElementById('form-section').style.display = 'none';
+      const result = document.getElementById('result');
+      result.style.display = 'block';
+    }
+
+    function reset() {
+      selectedMood = 0;
+      document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
+      document.getElementById('note').value = '';
+      document.getElementById('form-section').style.display = 'block';
+      document.getElementById('result').style.display = 'none';
+    }
+  </script>
+</body>
+</html>
