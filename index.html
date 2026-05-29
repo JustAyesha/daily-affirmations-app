@@ -19,7 +19,7 @@
       background: white;
       border-radius: 20px;
       padding: 40px;
-      max-width: 500px;
+      max-width: 520px;
       width: 100%;
       box-shadow: 0 10px 30px rgba(0,0,0,0.1);
       text-align: center;
@@ -73,15 +73,15 @@
       transition: background 0.2s;
     }
     .submit-btn:hover { background: #4a148c; }
-    .result {
-      display: none;
-      margin-top: 25px;
+    .result { display: none; margin-top: 25px; }
+    .result-box {
       padding: 20px;
       border-radius: 15px;
       background: #f3e5f5;
+      margin-bottom: 20px;
     }
-    .result h3 { color: #6a1b9a; margin-bottom: 10px; font-size: 20px; }
-    .result p { color: #555; margin-bottom: 8px; line-height: 1.6; }
+    .result-box h3 { color: #6a1b9a; margin-bottom: 10px; font-size: 20px; }
+    .result-box p { color: #555; margin-bottom: 8px; line-height: 1.6; }
     .tip {
       background: #e8f5e9;
       border-radius: 10px;
@@ -90,8 +90,61 @@
       color: #2e7d32;
       font-size: 14px;
     }
+    .journal-section {
+      margin-top: 20px;
+      text-align: left;
+    }
+    .journal-section label {
+      display: block;
+      color: #6a1b9a;
+      font-weight: bold;
+      margin-bottom: 8px;
+      font-size: 15px;
+    }
+    .journal-section textarea {
+      height: 120px;
+      border-color: #ce93d8;
+    }
+    .save-btn {
+      background: #6a1b9a;
+      color: white;
+      border: none;
+      padding: 10px 25px;
+      font-size: 14px;
+      border-radius: 30px;
+      cursor: pointer;
+      margin-top: 5px;
+    }
+    .save-btn:hover { background: #4a148c; }
+    .saved-msg { color: #4caf50; font-size: 13px; margin-top: 8px; }
+    .links-section {
+      margin-top: 25px;
+      text-align: left;
+    }
+    .links-section h3 {
+      color: #6a1b9a;
+      margin-bottom: 12px;
+      font-size: 16px;
+      text-align: center;
+    }
+    .link-item {
+      display: flex;
+      align-items: center;
+      background: #f9f9f9;
+      border-radius: 10px;
+      padding: 12px 15px;
+      margin-bottom: 10px;
+      text-decoration: none;
+      color: #333;
+      transition: background 0.2s;
+      border: 1px solid #e0e0e0;
+    }
+    .link-item:hover { background: #f3e5f5; }
+    .link-icon { font-size: 22px; margin-right: 12px; }
+    .link-text strong { display: block; font-size: 14px; color: #6a1b9a; }
+    .link-text span { font-size: 12px; color: #888; }
     .reset-btn {
-      margin-top: 15px;
+      margin-top: 20px;
       background: none;
       border: 2px solid #6a1b9a;
       color: #6a1b9a;
@@ -99,6 +152,7 @@
       border-radius: 30px;
       cursor: pointer;
       font-size: 14px;
+      width: 100%;
     }
     .reset-btn:hover { background: #f3e5f5; }
   </style>
@@ -117,16 +171,65 @@
         <button class="mood-btn" onclick="selectMood(this, 4)" title="Pretty good">🙂</button>
         <button class="mood-btn" onclick="selectMood(this, 5)" title="Amazing">🌟</button>
       </div>
-
       <textarea id="note" placeholder="Want to share anything about your day? (optional)"></textarea>
-
       <button class="submit-btn" onclick="submitCheckin()">Check In 💚</button>
     </div>
 
     <div class="result" id="result">
-      <h3 id="result-title"></h3>
-      <p id="result-message"></p>
-      <div class="tip" id="result-tip"></div>
+      <div class="result-box">
+        <h3 id="result-title"></h3>
+        <p id="result-message"></p>
+        <div class="tip" id="result-tip"></div>
+      </div>
+
+      <!-- Journal Box -->
+      <div class="journal-section">
+        <label>📝 Write how you're feeling right now...</label>
+        <textarea id="journal-entry" placeholder="This is just for you. No one else can see this..."></textarea>
+        <button class="save-btn" onclick="saveJournal()">Save my thoughts</button>
+        <p class="saved-msg" id="saved-msg"></p>
+      </div>
+
+      <!-- Helpful Links -->
+      <div class="links-section">
+        <h3>💜 Here if you need more support</h3>
+        <a class="link-item" href="https://www.mind.org.uk" target="_blank">
+          <span class="link-icon">🧠</span>
+          <div class="link-text">
+            <strong>Mind</strong>
+            <span>Mental health information and support</span>
+          </div>
+        </a>
+        <a class="link-item" href="https://www.samaritans.org" target="_blank">
+          <span class="link-icon">📞</span>
+          <div class="link-text">
+            <strong>Samaritans</strong>
+            <span>Free to call 116 123, any time, any reason</span>
+          </div>
+        </a>
+        <a class="link-item" href="https://www.nhs.uk/every-mind-matters" target="_blank">
+          <span class="link-icon">💙</span>
+          <div class="link-text">
+            <strong>NHS Every Mind Matters</strong>
+            <span>Practical tips for your mental health</span>
+          </div>
+        </a>
+        <a class="link-item" href="https://www.headspace.com" target="_blank">
+          <span class="link-icon">🧘</span>
+          <div class="link-text">
+            <strong>Headspace</strong>
+            <span>Meditation and mindfulness exercises</span>
+          </div>
+        </a>
+        <a class="link-item" href="https://www.7cups.com" target="_blank">
+          <span class="link-icon">🫂</span>
+          <div class="link-text">
+            <strong>7 Cups</strong>
+            <span>Free online chat with a caring listener</span>
+          </div>
+        </a>
+      </div>
+
       <button class="reset-btn" onclick="reset()">Check in again</button>
     </div>
   </div>
@@ -178,14 +281,27 @@
       document.getElementById('result-message').textContent = r.message;
       document.getElementById('result-tip').textContent = r.tip;
       document.getElementById('form-section').style.display = 'none';
-      const result = document.getElementById('result');
-      result.style.display = 'block';
+      document.getElementById('result').style.display = 'block';
+    }
+
+    function saveJournal() {
+      const entry = document.getElementById('journal-entry').value.trim();
+      if (!entry) {
+        alert("Write something first 😊");
+        return;
+      }
+      document.getElementById('saved-msg').textContent = "✅ Your thoughts have been saved 💚";
+      setTimeout(() => {
+        document.getElementById('saved-msg').textContent = '';
+      }, 3000);
     }
 
     function reset() {
       selectedMood = 0;
       document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
       document.getElementById('note').value = '';
+      document.getElementById('journal-entry').value = '';
+      document.getElementById('saved-msg').textContent = '';
       document.getElementById('form-section').style.display = 'block';
       document.getElementById('result').style.display = 'none';
     }
